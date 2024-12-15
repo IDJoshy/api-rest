@@ -1,0 +1,17 @@
+{
+  "name": "apirest",
+  "version": "1.0.0",
+  "description": "API-REST made for CoderHouse's Advanced Back-End Course I",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "@EphemeralJosh",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
