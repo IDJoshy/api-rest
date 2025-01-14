@@ -1,8 +1,10 @@
 import { Router } from "express";
-export const router = Router();
+import { io } from "../app.js";
 import { ProductManager } from "../dao/ProductManager.js";
 import { HandlerError } from "../utils.js";
 
+
+export const router = Router();
 ProductManager.SetPath("./src/data/products.json");
 
 //GET PRODUCTS
@@ -94,8 +96,13 @@ router.post("/", async (req, res) =>
             res.setHeader('Content-Type', 'application/json');
             return res.status(400).json({error: `Product with code: ${code} already exists`});
         }
-
+        
+        //Add
         let newProduct = await ProductManager.AddProduct({title, description, code, price, status, stock, category, thumbnails});
+        //Update
+        const products = await ProductManager.GetProducts();
+        io.emit("updateProducts", products);
+        
         res.setHeader('Content-Type', 'application/json');
         return res.status(201).json({payload: `Product successfully added`, newProduct});
 
@@ -167,7 +174,12 @@ router.delete("/:pid", async (req, res) =>
             return res.status(404).json({ error: `Not Found: No product with ID ${id}` });
         }
 
+        //Delete
         let status = await ProductManager.DeleteProduct(id);
+        //Update
+        const products = await ProductManager.GetProducts();
+        io.emit("updateProducts", products);
+
         res.setHeader('Content-Type', 'application/json');
         return res.status(200).json({payload: `${status}`});
     
