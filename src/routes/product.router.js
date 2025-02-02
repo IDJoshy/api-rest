@@ -90,7 +90,8 @@ router.post("/", async (req, res) =>
     try
     {
         let validate = ValidateValues(req.body);
-        let isThereProduct = await ProductManager.GetProductByCode(code);
+        
+        
         if(isThereProduct)
         {
             res.setHeader('Content-Type', 'application/json');

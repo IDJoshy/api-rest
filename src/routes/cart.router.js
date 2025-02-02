@@ -1,6 +1,7 @@
 import { Router } from "express";
 export const router = Router();
 import { CartManager } from "../dao/CartManager.js";
+import { ProductManager } from "../dao/ProductManager.js";
 import { HandlerError } from "../utils.js";
 
 CartManager.SetPath("./src/data/carts.json");
@@ -59,6 +60,15 @@ router.post("/:cid/product/:pid", async (req, res) =>
 
     if (isNaN(cartId) || isNaN(productId)) {
         return res.status(400).json({ error: "Invalid cart ID or product ID" });
+    }
+
+    let isThereProduct = await ProductManager.GetProductByCode(code);
+    let isThereCart = await CartManager.GetCartById(cartId);
+
+    if(!isThereCart || !isThereProduct )
+    {
+        res.setHeader('Content-Type', 'application/json');
+        return res.status(404).json({error: `There is no Cart with id: ${cartId} or there's no product with code: ${code}`});
     }
 
     try
