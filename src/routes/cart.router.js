@@ -6,6 +6,20 @@ import { HandlerError } from "../utils.js";
 import mongoose from "mongoose";
 
 //CartManager.SetPath("./src/data/carts.json");
+
+//GET ALL CARTS
+router.get("/", async (req, res) => 
+{
+    try 
+    {
+        const carts = await CartManager.GetCarts();
+        res.json({ status: "success", payload: carts });
+    } 
+    catch (error) 
+    {
+        HandlerError(res, error.message);
+    }
+});
  
 //GET CART WITH POPULATE
 router.get("/:cid", async (req, res) =>
@@ -53,7 +67,7 @@ router.post("/:cid/product/:pid", async (req, res) =>
             return res.status(400).json({ error: "Invalid cart ID or product ID" });
         }
 
-        const productExists = await ProductManager.GetProductById(pid);
+        const productExists = await ProductManager.GetProductBy({ _id: pid});
         const cartExists = await CartManager.GetCartById(cid);
 
         if (!cartExists || !productExists) {

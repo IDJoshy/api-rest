@@ -46,7 +46,6 @@ export class CartManager
             throw new Error(`Error (404): There is no product with id: ${pid}.`);
         }
     
-        // Buscar si el producto ya existe en el carrito
         const productIndex = cart.products.findIndex(p => p.product.equals(pid));
     
         if (productIndex !== -1) 
