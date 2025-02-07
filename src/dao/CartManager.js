@@ -1,8 +1,69 @@
-import fs from "fs";
+// only for file-system
+// import fs from "fs";
 import { HandlerError } from "../utils.js";
+import { cartModel } from "./models/cart.model.js";
+import { productModel } from "./models/product.model.js";
 
 export class CartManager
 {
+
+    static async GetCarts()
+    {
+        return await cartModel.find();
+    }
+
+    static async GetCartById(id) 
+    {
+        return await cartModel.findById(id).populate("products.product");
+    }
+
+
+    static async CreateCart() 
+    {
+        try 
+        {
+            const newCart = await cartModel.create({ products: [] });
+            return newCart;
+        } 
+        catch (error) 
+        {
+            throw new Error("Error creating cart: " + error.message);
+        }
+    }
+
+    static async AddProductToCart(cid, pid)
+    {
+        const cart = await this.GetCartById(cid);
+
+        if (!cart) 
+        {
+            throw new Error(`Error (404): There is no cart with id: ${cid}.`);
+        }
+        
+        const product = await productModel.findById(pid);
+        if (!product) 
+        {
+            throw new Error(`Error (404): There is no product with id: ${pid}.`);
+        }
+    
+        // Buscar si el producto ya existe en el carrito
+        const productIndex = cart.products.findIndex(p => p.product.equals(pid));
+    
+        if (productIndex !== -1) 
+        {
+            cart.products[productIndex].quantity += 1;
+        } 
+        else 
+        {
+            cart.products.push({ product: pid, quantity: 1 });
+        }
+    
+        return await cart.save();
+    }
+
+
+    //#region File-System
+    /*
     static #path = "";
 
     static SetPath(path = "")
@@ -78,5 +139,7 @@ export class CartManager
         }
         await fs.promises.writeFile(this.#path, data);
     }
+    */
+    //#endregion
 
 }

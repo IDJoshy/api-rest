@@ -1,6 +1,11 @@
-export const HandlerError = (res, error) =>
+export const HandlerError = (res, error, statusCode = 500) => 
 {
-    console.log(error);
-    res.setHeader('Content-Type', 'application/json');
-    return res.status(500).json({error : `Internal Server ${error}`});
-}
+    console.error("Error:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
+    res.setHeader("Content-Type", "application/json");
+    return res.status(statusCode).json({
+        error: "Internal Server Error",
+        details: process.env.NODE_ENV === "development" ? errorMessage : undefined, 
+    });
+};

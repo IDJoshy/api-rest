@@ -1,8 +1,36 @@
-import fs from "fs";
+// only for file-system
+// import fs from "fs";
+
 import { HandlerError } from "../utils.js";
+import { productModel } from "./models/product.model.js";
 
 export class ProductManager 
 {
+    static async GetProducts(filter = {}, sortOption = {})
+    {
+        return await productModel.find(filter).sort(sortOption).lean();
+    }
+
+    static async GetProductBy(filter = {}) //filter = {code: "code"}, {title: "title"}, {_id: "id"}
+    {
+        return await productModel.findOne(filter);
+    }
+    static async AddProduct(product)
+    {
+        return await productModel.create(product);
+    }   
+    static async UpdateProduct(id, modifiedProduct)
+    {
+        return await productModel.findByIdAndUpdate(id, modifiedProduct, { new: true }).lean();
+    }
+    static async DeleteProduct(id)
+    {
+        return await productModel.findByIdAndDelete(id).lean();
+    }
+
+    //#region File-System
+
+    /*
     static #path = "";
 
     static SetPath(path = "")
@@ -44,7 +72,7 @@ export class ProductManager
         {
             id = products[products.length - 1].id + 1;
         }
-        
+
         let newProduct =
         {
             id,
@@ -96,4 +124,7 @@ export class ProductManager
         }
         await fs.promises.writeFile(this.#path, data);
     }
+    */
+
+    //#endregion
 }

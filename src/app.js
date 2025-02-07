@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import path from "path";
+import { connectToService } from "./conn.js";
 
 import { router as productRouter } from "./routes/product.router.js";
 import { router as cartRouter } from "./routes/cart.router.js";
@@ -43,6 +44,11 @@ io.on("connection", (socket) =>
 httpServer.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+connectToService(
+    "mongodb+srv://EphemeralJosh:ojGibNPUuew2feoh@backend-1-cluster.dy2l2.mongodb.net/?retryWrites=true&w=majority&appName=BackEnd-1-Cluster",
+    "BackEnd"
+);
 
 // const server = app.listen(PORT, () => {
 //     console.log(`Server running on port ${PORT}`);
