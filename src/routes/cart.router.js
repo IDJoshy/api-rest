@@ -17,7 +17,7 @@ router.get("/:cid", async (req, res) =>
             return res.status(400).json({ error: "Invalid cart ID" });
         }
 
-        const cart = await CartManager.GetCartById(cid).populate("products.product");
+        const cart = await CartManager.GetCartById(cid);
 
         if (!cart) {
             return res.status(404).json({ error: `Cart with ID ${cid} not found` });

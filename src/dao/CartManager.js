@@ -14,7 +14,7 @@ export class CartManager
 
     static async GetCartById(id) 
     {
-        return await cartModel.findById(id).populate("products.product");
+        return await cartModel.findById(id);
     }
 
 
