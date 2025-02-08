@@ -11,9 +11,9 @@ export class ProductManager
         return await productModel.find(filter).sort(sortOption).lean();
     }
 
-    static async GetProductBy(filter = {}) //filter = {code: "code"}, {title: "title"}, {_id: "id"}
+    static async GetProductBy(filter = {})
     {
-        return await productModel.findOne(filter);
+        return await productModel.findOne(filter).lean();
     }
     static async AddProduct(product)
     {

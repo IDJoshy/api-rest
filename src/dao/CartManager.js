@@ -17,12 +17,11 @@ export class CartManager
         return await cartModel.findById(id);
     }
 
-
     static async CreateCart() 
     {
         try 
         {
-            const newCart = await cartModel.create({ products: [] });
+            const newCart = await cartModel.create({ products: [{}] });
             return newCart;
         } 
         catch (error) 
@@ -57,6 +56,64 @@ export class CartManager
             cart.products.push({ product: pid, quantity: 1 });
         }
     
+        return await cart.save();
+    }
+
+    static async UpdateProductQuantity(cid, pid, quantity) 
+    {
+        const cart = await this.GetCartById(cid);
+        if (!cart) {
+          throw new Error(`Cart with id ${cid} not found`);
+        }
+        
+        const productIndex = cart.products.findIndex(item => item.product.equals(pid));
+        if (productIndex === -1) {
+          throw new Error(`Product with id ${pid} not found in cart`);
+        }
+        
+        // Actualizar la cantidad con el valor recibido en req.body
+        cart.products[productIndex].quantity = quantity;
+        return await cart.save();
+    }
+
+    static async UpdateCart(cid, products) 
+    {
+        const cart = await this.GetCartById(cid);
+        if (!cart) {
+          throw new Error(`Cart with id ${cid} not found`);
+        }
+        
+        cart.products = products;
+        return await cart.save();
+    }
+
+    static async RemoveProductFromCart(cid, pid)
+    {
+        const cart = await this.GetCartById(cid);
+
+        if (!cart) 
+        {
+            throw new Error(`Error (404): There is no cart with id: ${cid}.`);
+        }
+        
+        const productIndex = cart.products.findIndex(item => item.product.equals(pid));
+        if(productIndex === -1)
+        {
+            throw new Error(`Product with id ${pid} not found in cart`);
+        }
+
+        cart.products.splice(productIndex, 1);
+        return await cart.save();
+    }
+
+    static async ClearCart(cid) 
+    {
+        const cart = await this.GetCartById(cid);
+        if (!cart) {
+          throw new Error(`Cart with id ${cid} not found`);
+        }
+        
+        cart.products = [];
         return await cart.save();
     }
 
